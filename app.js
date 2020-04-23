@@ -1,8 +1,10 @@
 const config = require('config');
 const mongoose  = require('mongoose');
 const usersRoute = require('./routes/user.route');
+const iconRoute = require('./routes/icon.route');
 const express = require('express');
 const app = express();
+
 
 if(!config.get('myprivatekey')) {
     console.log('Private key is not defined.')
@@ -21,6 +23,8 @@ connection.once('open', () => {console.log('Connected to MongoDB.')})
 
 app.use(express.json());
 app.use('/api/users', usersRoute)
+app.use('/api/icon', iconRoute)
+
 
 // const port = process.env.PORT || 3000;
 app.listen(3000, () => console.log('Listening to port 3000.'))

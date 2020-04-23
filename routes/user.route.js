@@ -1,3 +1,4 @@
+const config = require('config')
 const auth = require('../middleware/auth')
 const bcrypt = require('bcrypt')
 const { User, validate } = require('../models/user.model')
@@ -9,7 +10,39 @@ router.get('/current', auth, async (req, res) => {
     res.send(user);
 })
 
-router.post('/', async (req, res) => {
+router.post('/login', async (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    await User.findOne({name: username}, (error, user) => {
+        if (error) {
+            res.status(401).json({ "message" : "Authentication failed.", "error" : error})
+        }
+        if (user == null) {
+            res.status(401).json({ "message" : "Authentication failed." })
+        } else {
+            bcrypt.compare(password, user.password, (error, same) => {
+                if (error) {
+                    res.status(401).json({ "message" : "Authentication failed." })
+                }
+                if (same) {
+                    const token = user.generateAuthToken()
+                    res.header("x-auth-token", token).status(200).json({ "message" : "Login success!" })
+                }
+            })
+        }
+    })
+})
+
+router.get('/logout', auth, async (req, res) => {
+    const token = req.headers["x-access-token"] || req.headers["authorization"];
+    const expiredToken = jwt.sign({ 
+        _id: token._id,
+        isAdmin: token.isAdmin
+    }, config.get('myprivatekey'), { expiresIn: 0})
+})
+
+router.post('/signup', async (req, res) => {
     const { error } = validate(req.body);
     if (error) {return res.status(400).send(error.details[0].message)}
 
@@ -19,17 +52,19 @@ router.post('/', async (req, res) => {
     user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        isAdmin: false
     });
     user.password = await bcrypt.hash(user.password, 10)
-    await user.save();
-
-    const token = user.generateAuthToken();
-    res.header("x-auth-token", token).send({
-        _id: user._id,
-        name: user.name,
-        emai: user.email
-    })
+    try {
+        await user.save()
+        res.header("x-auth-token", token).json({
+            "message": "Sign-up success!"
+        })
+    }
+    catch (error) {
+        res.status(501).json({ "message": "Registration Error" })
+    }
 })
 
 module.exports = router;

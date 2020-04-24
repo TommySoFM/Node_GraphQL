@@ -14,17 +14,19 @@ router.get('/all', async (req, res) => {
 })
 
 router.get('/:name', async (req, res) => {
-    const name = req.params.name
-    const icon = Icon.findOne({icon_name: name}, (err, promise) => {
-        if (err) { res.status(404).send( 'Target not found: ' + err )}
-    })
-
-    if (icon) {res.status(200).send(icon)}
+    const query = req.params.name
+    try {
+        const icon = Icon.findOne({name: query})
+        res.status(200).send(icon)
+    }
+    catch (error) {
+        { res.status(404).json({ "message": "Target not found", "error": error })}
+    }
 })
 
 router.post('/', auth, isAdmin, async (req, res) => {
     const icon = new Icon({
-        icon_name: req.body.icon_name,
+        name: req.body.name,
         origin: req.body.origin,
         price: req.body.price,
         picture: req.body.picture,

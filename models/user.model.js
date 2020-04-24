@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
         maxlength: 255
     },
     isAdmin: Boolean
-})
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 
 UserSchema.methods.generateAuthToken = function() {
     const token = jwt.sign({ 

@@ -1,16 +1,16 @@
 const mongoose = require('mongoose')
 
 const IconSchema = new mongoose.Schema({
-    icon_name: {
+    name: {
         type: String,
         required: true,
-        // match: '\S+',
+        minlength: 1,
         unique: true
     },
     origin: {
         type: String,
         required: true,
-        // match: '\S+'
+        minlength: 1
     },
     price: {
         type: Number,
@@ -34,6 +34,6 @@ const IconSchema = new mongoose.Schema({
     }
 })
 
-const Icon = mongoose.model('IconModel', IconSchema)
+const Icon = mongoose.model('Icon', IconSchema)
 
 exports.Icon = Icon

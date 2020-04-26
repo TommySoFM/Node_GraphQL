@@ -29,6 +29,16 @@ type LoginResponse {
     expiration: String!
 }
 
+type Cart {
+    owner: User!
+    items: [Item]
+}
+
+type Item {
+    icon: Icon!
+    quantity: Int!
+}
+
 input UserInput {
     name: String!
     email: String!
@@ -51,11 +61,14 @@ type RootQuery {
     login (name: String!, password: String!): LoginResponse!
     icons: [Icon!]!
     icon (name: String!): Icon!
+    cart: Cart!
 }
 
 type RootMutation {
     createUser (userInput: UserInput): User
     createIcon (iconInput: IconInput): Icon!
+    addToCart (itemID: ID!, quantity: Int!): Cart!
+    emptyCart: String!
 }
 
 schema {

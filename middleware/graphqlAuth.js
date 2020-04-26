@@ -10,10 +10,11 @@ module.exports = (req, res, next) => {
         req.isTokenExist = true
         try {
             const decoded = jwt.verify(token, config.get('myprivatekey'))
+            req.isTokenValid = true
             req.user = decoded
             next()
         } catch(error){
-            throw new Error('Error parsing token.')
+            req.isTokenValid = false
         }
     }
 }

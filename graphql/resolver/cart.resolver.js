@@ -1,9 +1,7 @@
-const { AuthFilter } = require('./methods')
 const { Cart } = require('../../models/cart.model')
 
 module.exports = {
     cart: async (args, req) => {
-        AuthFilter(req)
         try {
             const cart = await Cart.findOne({ owner: req.user._id }).populate('owner').populate('items.icon')
             if(!cart){
@@ -15,7 +13,6 @@ module.exports = {
         }
     },
     addToCart: async ({ itemID, quantity }, req) => {
-        AuthFilter(req)
         try {
             const cart = await Cart.findOne({ owner: req.user._id })
             if(!cart){
@@ -54,7 +51,6 @@ module.exports = {
         }
     },
     emptyCart: async (args, req) => {
-        AuthFilter(req)
         try {
             await Cart.findOneAndUpdate({ owner: req.user._id }, { items: [] })
             return 'Cart emptied.'

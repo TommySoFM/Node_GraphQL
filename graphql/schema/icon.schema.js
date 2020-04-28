@@ -21,6 +21,12 @@ module.exports= `
         discount_unit: String
         discount_target: String
     }
+    input DiscountInput {
+        value: Float!
+        unit: String!
+        target: String
+    }
+
 
     type Query {
         icons: [Icon!]!
@@ -29,5 +35,6 @@ module.exports= `
 
     type Mutation {
         createIcon (iconInput: IconInput): Icon!
-    }
-`
+        changeDiscount (iconID: String, discount: DiscountInput): Icon!
+    }    
+`    

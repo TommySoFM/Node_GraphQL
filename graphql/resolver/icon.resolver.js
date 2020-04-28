@@ -55,5 +55,23 @@ module.exports = {
         } catch (error) {
             throw error
         }
+    },
+    changeDiscount: async (args, req) => {
+        AuthFilter(req)
+        AdminFilter(req)
+        try {
+            const icon = await Icon.findByIdAndUpdate ( 
+                args.iconID,
+                { $set: {
+                    discount: {
+                        value: +args.discount.value,
+                        unit: args.discount.unit,
+                        target: args.discount.target
+                    }
+                }}, { new: true })
+            return icon
+        } catch (error) {
+            throw error
+        }
     }
 }

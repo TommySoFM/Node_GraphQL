@@ -16,19 +16,22 @@ if(!config.get('myprivatekey')) {
     process.exit(1)
 }
 
+// Mongoose Connection
 mongoose
     .connect('mongodb+srv://tommy:Qt2abc123@mongo-demo-8r1ga.mongodb.net/node-demo?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-    //Error handling on initial connection:
+    // Mongoose Error Handling (on initial connection)
     .catch(error => console.log('Connection to MongoDB Failed...'));
-
+// Mongoose Success,Error Handling (after initial connection)
 const connection = mongoose.connection;
-//Error handling after initial connection:
 connection.on('error', console.error.bind(console, 'Connection Error:'))
 connection.once('open', () => {console.log('Connected to MongoDB.')})
 
+//For Restful JSON API
 app.use(express.json());
 app.use('/api/users', usersRoute)
 app.use('/api/icon', iconRoute)
+
+//For GraphQL
 app.use(graphqlAuth)
 app.use('/graphql', graphqlHttp({
     schema: graphqlSchema,

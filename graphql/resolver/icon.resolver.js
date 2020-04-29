@@ -1,5 +1,7 @@
 const { Icon } = require('../../models/icon.model')
 const { AuthFilter, AdminFilter } = require('./methods')
+const redis = require('redis')
+const client = redis.createClient()
 
 module.exports = {
     icons: async () => {
@@ -51,7 +53,11 @@ module.exports = {
                 }
             })
             const result = await icon.save()
-            return icon
+            client.zadd( ["icon", 0, result.id ], (error, response) => {
+                if (error) throw error
+                console.log('Response: Saved ' + response + ' item')
+            })
+            return result
         } catch (error) {
             throw error
         }

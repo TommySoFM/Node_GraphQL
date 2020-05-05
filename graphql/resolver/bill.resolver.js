@@ -1,8 +1,9 @@
 const { Bill } = require('../../models/bill.model')
 const { Cart } = require('../../models/cart.model')
 const { AuthFilter } = require('./methods')
-const redis = require('redis')
-const client = redis.createClient()
+const asyncRedis = require('async-redis')
+const client = asyncRedis.createClient()
+//{ host: 'redis-server', port: 6379}
 
 module.exports = {
     addToBill: async (args, req) => {

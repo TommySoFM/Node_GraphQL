@@ -1,0 +1,28 @@
+version: '3.0'
+services: 
+    web:
+        build: .
+        links: 
+            - redis-server
+        ports:
+            - '3000:3000'
+    #     depends_on: 
+    #         - mongodb
+    # mongodb:
+    #     user: $UID
+    #     image: mongo
+    #     ports: 
+    #         - '27017:27017'
+    #     environment: 
+    #         MONGO_INITDB_ROOT_USERNAME: root
+    #         MONGO_INITDB_ROOT_PASSWORD: example
+    #         MONGO_INITDB_DATABASE: node_demo
+    #         MONGO_USERNAME: banaji
+    #         MONGO_PASSWORD: links
+    #     volumes: 
+    #         - ./data:/data/db
+    #         - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+    redis-server:
+        image: redis:alpine
+        ports:
+            - '6379:6379'

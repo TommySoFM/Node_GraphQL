@@ -18,7 +18,7 @@ if(!config.get('myprivatekey')) {
 
 // Mongoose Connection
 mongoose
-    .connect('mongodb+srv://tommy:Qt2abc123@mongo-demo-8r1ga.mongodb.net/node-demo?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+    .connect(config.get('MONGO_ATLAS_URI'), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
     // Mongoose Error Handling (on initial connection)
     .catch(error => console.log('Connection to MongoDB Failed...'));
 // Mongoose Success,Error Handling (after initial connection)

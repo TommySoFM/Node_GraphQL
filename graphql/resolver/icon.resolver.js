@@ -1,7 +1,8 @@
 const { Icon } = require('../../models/icon.model')
 const { AuthFilter, AdminFilter } = require('./methods')
-const redis = require('redis')
-const client = redis.createClient()
+const asyncRedis = require('async-redis')
+const client = asyncRedis.createClient()
+//{ host: 'redis-server', port: 6379}
 
 module.exports = {
     icons: async () => {

@@ -1,3 +1,5 @@
 {
-    "myprivatekey": "privatekey"
+    "myprivatekey": "privatekey",
+    "MONGO_URI": "mongodb://banaji:links@localhost:27017/node_demo",
+    "MONGO_ATLAS_URI": "mongodb+srv://tommy:Qt2abc123@mongo-demo-8r1ga.mongodb.net/node-demo?retryWrites=true&w=majority"
 }

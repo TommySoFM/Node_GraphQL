@@ -8,8 +8,9 @@ module.exports= `
         discount: Discount
     }
     type Discount {
-        value: Float!
+        percentage: Float!
         unit: String!
+        to: String
         target: String
     }
     input IconInput {
@@ -17,13 +18,15 @@ module.exports= `
         origin: String!
         price: Float!
         picture: String!
-        discount_value: Float
-        discount_unit: String
+        discount_percentage: Float
+        discount_minQuantity: Float
+        discount_to: String
         discount_target: String
     }
     input DiscountInput {
-        value: Float!
-        unit: String!
+        percentage: Float!
+        minQuantity: Float!
+        to: String
         target: String
     }
 
@@ -31,6 +34,7 @@ module.exports= `
     type Query {
         icons: [Icon!]!
         icon (name: String!): Icon!
+        searchIcon (keyword: String!, method: String!, number: Int): [Icon!]
     }
 
     type Mutation {

@@ -1,7 +1,7 @@
 const { Icon } = require('../../models/icon.model')
 const { AuthFilter, AdminFilter } = require('./methods')
-const asyncRedis = require('async-redis')
-const client = asyncRedis.createClient()
+const redis = require('redis')
+const client = redis.createClient()
 //{ host: 'redis-server', port: 6379}
 
 module.exports = {
@@ -33,6 +33,26 @@ module.exports = {
             throw error
         }
     },
+    searchIcon: async args => {
+        if( args.keyword.length < 3 ){
+            return []
+        } else {
+            try{
+                let icons = []
+                switch (args.method) {
+                    case 'partial':
+                        icons = await Icon.find({ name: new RegExp(args.keyword, "gi")}, null, { limit: args.number })
+                        break
+                    case 'full':
+                        icons = await Icon.find({ $text: { $search: args.keyword, $caseSensitive: false }})
+                        break
+                }
+                return icons
+            } catch (error) {
+                throw error
+            }
+        }
+    },
     createIcon: async (args, req) => {
         AuthFilter(req)
         AdminFilter(req)
@@ -48,8 +68,9 @@ module.exports = {
                 price: +args.iconInput.price,
                 picture: args.iconInput.picture,
                 discount: {
-                    value: +args.iconInput.discount_value,
-                    unit: args.iconInput.discount_unit,
+                    percentage: +args.iconInput.discount_percentage,
+                    minQuantity: args.iconInput.discount_minQuantity,
+                    to: args.iconInput.discount_to,
                     target: args.iconInput.discount_target
                 }
             })
@@ -71,8 +92,9 @@ module.exports = {
                 args.iconID,
                 { $set: {
                     discount: {
-                        value: +args.discount.value,
-                        unit: args.discount.unit,
+                        percentage: +args.discount.percentage,
+                        minQuantity: +args.discount.minQuantity,
+                        to: args.discount.to,
                         target: args.discount.target
                     }
                 }}, { new: true })

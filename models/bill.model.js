@@ -20,5 +20,13 @@ const  BillSchema = new mongoose.Schema({
     }]
 }, { timestamps: true })
 
+const autoPopulation = function (next) {
+    this.populate('user')
+    this.populate('items.icon')
+    next()
+}
+
+BillSchema.pre('find', autoPopulation)
+
 const BillModel = mongoose.model( 'Bill', BillSchema )
 exports.Bill = BillModel

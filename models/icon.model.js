@@ -22,18 +22,22 @@ const IconSchema = new mongoose.Schema({
         unique: true
     },
     discount: {
-        value: {
+        percentage: {
             type: Number,
-            required: true
+            required: true,
+            $lte: 100
         },
-        unit: { 
-            type: String,
+        minQuantity: { 
+            type: Number,
             required: true 
+        },
+        to: {
+            type: Date
         },
         target: String
     }
 })
+IconSchema.path('name').index({ text : true });
 
 const Icon = mongoose.model('Icon', IconSchema)
-
 exports.Icon = Icon

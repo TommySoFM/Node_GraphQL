@@ -6,7 +6,11 @@ type Bill {
     createdAt: String!
 }
 
+type Query {
+    getBills: [Bill!]
+    searchBill (keyword: String!, from: [Int!], to:[Int!]): [Bill!]
+}
 type Mutation {
-    addToBill: Bill!
+    addToBill: String!
 }
 `

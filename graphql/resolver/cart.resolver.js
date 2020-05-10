@@ -3,7 +3,7 @@ const { Cart } = require('../../models/cart.model')
 module.exports = {
     cart: async (args, req) => {
         try {
-            const cart = await Cart.findOne({ owner: req.user._id }).populate('owner').populate('items.icon')
+            const cart = await Cart.findOne({ user: req.user._id }).populate('user').populate('items.icon')
             if(!cart){
                 throw new Error ('No cart exists.')
             }
@@ -14,10 +14,10 @@ module.exports = {
     },
     addToCart: async ({ itemID, quantity }, req) => {
         try {
-            const cart = await Cart.findOne({ owner: req.user._id })
+            const cart = await Cart.findOne({ user: req.user._id })
             if(!cart){
                 const newCart = new Cart({
-                    owner: req.user._id,
+                    user: req.user._id,
                     items: [{
                         icon: itemID,
                         quantity: quantity
@@ -27,12 +27,12 @@ module.exports = {
                 return newCart
             }
 
-            const isItemExist = await Cart.findOne({ owner: req.user._id, items: {$elemMatch: { icon: itemID }}})
+            const isItemExist = await Cart.findOne({ user: req.user._id, items: {$elemMatch: { icon: itemID }}})
             if(isItemExist) {
                 // await cart.updateOne({ $set: { 'items.$[i].quantity': quantity }}, { arrayFilters: [{ 'i.icon': itemID }]})
                 const newCart = 
                     Cart.findOneAndUpdate(
-                        { owner: req.user._id },
+                        { user: req.user._id },
                         { $set: { 'items.$[i].quantity': quantity }},
                         { arrayFilters: [{ 'i.icon': itemID }], new: true }
                     )
@@ -52,7 +52,7 @@ module.exports = {
     },
     emptyCart: async (args, req) => {
         try {
-            await Cart.findOneAndUpdate({ owner: req.user._id }, { items: [] })
+            await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] })
             return 'Cart emptied.'
         } catch (error) {
             throw error

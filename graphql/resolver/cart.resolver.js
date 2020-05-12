@@ -1,7 +1,11 @@
 const { Cart } = require('../../models/cart.model')
+const { User } = require('../../models/user.model')
+const { Icon } = require('../../models/icon.model')
+const mongoose = require('mongoose')
 
 module.exports = {
     cart: async (args, req) => {
+        AuthFilter(req)
         try {
             const cart = await Cart.findOne({ user: req.user._id }).populate('user').populate('items.icon')
             if(!cart){
@@ -13,6 +17,7 @@ module.exports = {
         }
     },
     addToCart: async ({ itemID, quantity }, req) => {
+        AuthFilter(req)
         try {
             const cart = await Cart.findOne({ user: req.user._id })
             if(!cart){
@@ -51,6 +56,7 @@ module.exports = {
         }
     },
     emptyCart: async (args, req) => {
+        AuthFilter(req)
         try {
             await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] })
             return 'Cart emptied.'
